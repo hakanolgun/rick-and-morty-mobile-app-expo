@@ -1,31 +1,67 @@
-import { StyleSheet } from 'react-native';
+import {View, FlatList, SafeAreaView} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import base from '../../constants/Base';
+import ShowMsg from '../../components/common/ShowMsg';
+import {IEpisode} from '../../interface/episode';
+import EpisodeCard from '../../components/episode/EpisodeCard';
+import Pagination from '../../components/common/Pagination';
+import {getSearchParamFromURL} from '../../utils/utils';
+import Search from '../../components/common/Search';
+import useAxios from '../../hooks/useAxios';
+import {getEpisodes} from '../../api/api';
 
-import EditScreenInfo from '../../components/EditScreenInfo';
-import { Text, View } from '../../components/Themed';
+const EpisodesScreen = () => {
+  const [res, loading, error, fetchData] = useAxios();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [episodes, setEpisodes] = useState<IEpisode[]>([]);
+  const [searchValue, setSearchValue] = useState('');
 
-export default function TabOneScreen() {
+  useEffect(() => {
+    if (res) {
+      setEpisodes(res.results);
+    } else {
+      fetchData(getEpisodes('1', ''));
+    }
+  }, [res, fetchData]);
+
+  const handleSearch = async (value: string) => {
+    await fetchData(getEpisodes('1', value));
+  };
+
+  const renderCards = ({item}: {item: IEpisode}) => <EpisodeCard episode={item} />;
+
+  const handlePageChange = async (url: string) => {
+    if (url) {
+      const newPage = getSearchParamFromURL(url, 'page');
+      await fetchData(getEpisodes(newPage, searchValue));
+      setCurrentPage(Number(newPage));
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
+    <SafeAreaView style={base.con}>
+      <View style={base.container}>
+        <Search
+          handleSearch={handleSearch}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+        />
+        {loading || !res ? <ShowMsg full loading /> : null}
+        {error ? <ShowMsg full msg={error} /> : null}
+        {!error && !loading && res ? (
+          <>
+            <FlatList
+              data={episodes}
+              keyExtractor={item => String(item.id)}
+              renderItem={renderCards}
+              showsVerticalScrollIndicator={false}
+            />
+            <Pagination currentPage={currentPage} info={res.info} changePage={handlePageChange} />
+          </>
+        ) : null}
+      </View>
+    </SafeAreaView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
+export default EpisodesScreen;

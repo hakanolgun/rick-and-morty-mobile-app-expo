@@ -1,40 +1,30 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
-import { Pressable, useColorScheme } from "react-native";
+import React from 'react';
+import {Tabs} from 'expo-router';
+import {FontAwesome as Icon} from '@expo/vector-icons';
 
-import Colors from "../../constants/Colors";
-
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+const TabLayoutNav = () => {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        tabBarShowLabel: false,
-      }}
-    >
+    <Tabs screenOptions={{tabBarShowLabel: false}}>
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          title: 'Episodes',
+          tabBarIcon: ({focused}) => (
+            <Icon name="home" color={focused ? 'green' : 'white'} size={36} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="favorites"
         options={{
-          title: "Favorites",
-          tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
+          title: 'Favorites',
+          tabBarIcon: ({focused}) => (
+            <Icon name="heart" color={focused ? 'green' : 'white'} size={36} />
+          ),
         }}
       />
+      <Tabs.Screen name="episode" options={{href: null}} />
     </Tabs>
   );
-}
+};
+export default TabLayoutNav;
