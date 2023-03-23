@@ -1,20 +1,19 @@
 import {StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {getCharID} from '../../utils/utils';
+import {ICharacter} from '../../interface/episode';
 
 interface IProps {
-  url: string;
+  char: ICharacter;
   children: any;
 }
 
-const CharacterCard = ({url, children}: IProps) => {
+const CharacterCard = ({char, children}: IProps) => {
   const nav = useNavigation();
-  const charID = getCharID(url);
-  const charImgUrl = `https://rickandmortyapi.com/api/character/avatar/${charID}.jpeg`;
+  const charImgUrl = `https://rickandmortyapi.com/api/character/avatar/${char.id}.jpeg`;
 
   const handlePress = () => {
-    nav.navigate('CharacterScreen' as never, {charID: charID} as never);
+    console.log('key');
   };
 
   return (

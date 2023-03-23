@@ -7,24 +7,21 @@ import CharacterCard from '../../components/character/CharacterCard';
 import FavoriteBtn from '../../components/character/FavoriteBtn';
 import {generateBeginAndEndNumbers, getCharID} from '../../utils/utils';
 import {useSearchParams} from 'expo-router';
+import {ICharacter} from '../../interface/episode';
 // import Search from '../../components/common/Search';
 
 const EpisodeScreen = () => {
-  const params = useSearchParams();
-  const [res, loading, error] = useEpisode(Number(params.id));
+  const {id} = useSearchParams();
+  const {episode, loading, error} = useEpisode(String(id));
 
-  const renderCharacters = ({item}: {item: string}) => (
-    <CharacterCard url={item}>
-      <FavoriteBtn charID={getCharID(item)} />
+  const renderCharacters = ({item}: {item: ICharacter}) => (
+    <CharacterCard char={item}>
+      <FavoriteBtn charID={String(item.id)} />
     </CharacterCard>
   );
 
-  if (loading || !res) {
-    return <ShowMsg full loading />;
-  }
-  if (error) {
-    return <ShowMsg full err msg={error} />;
-  }
+  if (loading || !episode) return <ShowMsg full loading />;
+  if (error) return <ShowMsg full err msg={error} />;
   return (
     <View style={base.con}>
       {/* <Search
@@ -33,13 +30,16 @@ const EpisodeScreen = () => {
         handleSearch={handleSearch}
       /> */}
       <Text style={base.title}>Characters In This Episode</Text>
-      {/* <FlatList
-        data={itemsToShow}
-        keyExtractor={item => item}
-        renderItem={renderCharacters}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{padding: 10}}
-      /> */}
+      {episode.characters ? (
+        <FlatList
+          data={episode.characters}
+          keyExtractor={item => String(item.id)}
+          renderItem={renderCharacters}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{padding: 10}}
+          initialNumToRender={4}
+        />
+      ) : null}
     </View>
   );
 };

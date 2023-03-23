@@ -1,25 +1,46 @@
-import {useEffect} from 'react';
-import {getEpisode} from '../api/api';
-import useAxios from './useAxios';
+import {useCallback, useEffect, useState} from 'react';
+import {IEpisode, IEpisodesInfo} from '../interface/episode';
 
-export const useEpisode = (id: number) => {
-  const [res, loading, err, fetchData] = useAxios();
+export const useEpisode = (id: string) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [episode, setEpisode] = useState<IEpisode | undefined>(undefined);
 
   useEffect(() => {
-    let control = true;
-    const getData = async () => {
-      await fetchData(getEpisode(id));
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        let url = `https://rickandmortyapi.com/api/episode/${id}`;
+        const response = await fetch(url);
+        const resData = await response.json();
+        if (resData.characters) {
+          let filledCharacters = [];
+          for (let character of resData.characters) {
+            const response2 = await fetch(character);
+            const resData2 = await response2.json();
+            filledCharacters.push(resData2);
+          }
+          const data = {...resData, characters: filledCharacters};
+          setEpisode(data);
+        } else {
+          setError(resData.error);
+        }
+      } catch (err) {
+        console.log('err', err);
+        setError(JSON.stringify(error));
+      } finally {
+        setLoading(false);
+      }
     };
-    if (control) {
-      getData();
-    }
-
+    fetchData();
     return () => {
-      control = false;
+      setLoading(false);
+      setError('');
+      setEpisode(undefined);
     };
-  }, [fetchData, id]);
+  }, []);
 
-  return [res, loading, err];
+  return {episode, loading, error};
 };
 
 export default useEpisode;
