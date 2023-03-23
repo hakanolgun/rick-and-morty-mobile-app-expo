@@ -1,42 +1,36 @@
-import {View, FlatList, SafeAreaView} from 'react-native';
+import {View, FlatList, SafeAreaView, RefreshControl} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import base from '../../constants/Base';
 import ShowMsg from '../../components/common/ShowMsg';
 import {IEpisode} from '../../interface/episode';
 import EpisodeCard from '../../components/episode/EpisodeCard';
-import Pagination from '../../components/common/Pagination';
 import {getSearchParamFromURL} from '../../utils/utils';
 import Search from '../../components/common/Search';
-import useAxios from '../../hooks/useAxios';
-import {getEpisodes} from '../../api/api';
+import useEpisodes from '../../hooks/useEpisodes';
 
 const EpisodesScreen = () => {
-  const [res, loading, error, fetchData] = useAxios();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [episodes, setEpisodes] = useState<IEpisode[]>([]);
+  const {info, episodes, loading, error, fetchEpisodes} = useEpisodes('1', '', false);
   const [searchValue, setSearchValue] = useState('');
+  const [refreshing, setRefreshing] = React.useState(false);
 
-  useEffect(() => {
-    if (res) {
-      setEpisodes(res.results);
-    } else {
-      fetchData(getEpisodes('1', ''));
+  const loadMore = async () => {
+    if (info && info.next) {
+      const page = getSearchParamFromURL(info.next, 'page');
+      await fetchEpisodes(page, searchValue, true);
     }
-  }, [res, fetchData]);
+  };
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await fetchEpisodes('1', '', false);
+    setRefreshing(false);
+  }, []);
 
   const handleSearch = async (value: string) => {
-    await fetchData(getEpisodes('1', value));
+    await fetchEpisodes('1', value, false);
   };
 
   const renderCards = ({item}: {item: IEpisode}) => <EpisodeCard episode={item} />;
-
-  const handlePageChange = async (url: string) => {
-    if (url) {
-      const newPage = getSearchParamFromURL(url, 'page');
-      await fetchData(getEpisodes(newPage, searchValue));
-      setCurrentPage(Number(newPage));
-    }
-  };
 
   return (
     <SafeAreaView style={base.con}>
@@ -46,18 +40,19 @@ const EpisodesScreen = () => {
           searchValue={searchValue}
           setSearchValue={setSearchValue}
         />
-        {loading || !res ? <ShowMsg full loading /> : null}
+        {loading || !info ? <ShowMsg full loading /> : null}
         {error ? <ShowMsg full msg={error} /> : null}
-        {!error && !loading && res ? (
-          <>
-            <FlatList
-              data={episodes}
-              keyExtractor={item => String(item.id)}
-              renderItem={renderCards}
-              showsVerticalScrollIndicator={false}
-            />
-            <Pagination currentPage={currentPage} info={res.info} changePage={handlePageChange} />
-          </>
+        {!error && info ? (
+          <FlatList
+            data={episodes}
+            keyExtractor={item => String(item.id)}
+            renderItem={renderCards}
+            showsVerticalScrollIndicator={false}
+            onEndReached={loadMore}
+            onEndReachedThreshold={0.3}
+            ListFooterComponent={loading ? <ShowMsg loading /> : null}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          />
         ) : null}
       </View>
     </SafeAreaView>

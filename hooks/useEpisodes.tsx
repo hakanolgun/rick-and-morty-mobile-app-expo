@@ -1,27 +1,47 @@
-import {useCallback, useEffect} from 'react';
-import {getEpisodes} from '../api/api';
-import useAxios from './useAxios';
+import {useCallback, useEffect, useState} from 'react';
+import {IEpisode, IEpisodesInfo} from '../interface/episode';
 
-export const useEpisodes = (page: string, name: string = '') => {
-  const [res, loading, err, fetchData] = useAxios();
+export const useEpisodes = (page: string, name: string = '', add: boolean) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [info, setInfo] = useState<IEpisodesInfo | undefined>(undefined);
+  const [episodes, setEpisodes] = useState<IEpisode[]>([]);
 
-  const fetchAgain = useCallback(
-    async (p: string, n: string) => {
-      await fetchData(getEpisodes(p, n));
-    },
-    [fetchData],
-  );
+  const fetchEpisodes = useCallback(async (p: string, n: string, a: boolean) => {
+    setLoading(true);
+    try {
+      let url = `https://rickandmortyapi.com/api/episode/?`;
+      p ? (url = url + `page=${p}`) : null;
+      n ? (url = url + `name=${n}`) : null;
+      const response = await fetch(url);
+      const resData = await response.json();
+      setInfo(resData.info);
+      if (a) {
+        setEpisodes(p => [...p, ...resData.results]);
+      } else {
+        setEpisodes(resData.results);
+      }
+    } catch (err) {
+      console.log('error', err);
+      setError(JSON.stringify(err));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     let ignore = false;
     if (!ignore) {
-      fetchAgain(page, name);
+      fetchEpisodes(page, name, add);
     }
     return () => {
+      setLoading(false);
+      setError('');
       ignore = true;
     };
-  }, [fetchAgain, page, name]);
-  return [res, loading, err, fetchAgain];
+  }, []);
+
+  return {info, episodes, loading, error, fetchEpisodes};
 };
 
 export default useEpisodes;

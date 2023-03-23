@@ -7,3 +7,10 @@ export interface IEpisode {
   url: string;
   created: string;
 }
+
+export interface IEpisodesInfo {
+  count: number;
+  pages: number;
+  next: string;
+  prev: string;
+}
