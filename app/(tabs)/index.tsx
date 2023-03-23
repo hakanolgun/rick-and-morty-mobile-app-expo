@@ -4,30 +4,38 @@ import base from '../../constants/Base';
 import ShowMsg from '../../components/common/ShowMsg';
 import {IEpisode} from '../../interface/episode';
 import EpisodeCard from '../../components/episode/EpisodeCard';
-import {getSearchParamFromURL} from '../../utils/utils';
 import Search from '../../components/common/Search';
 import useEpisodes from '../../hooks/useEpisodes';
 
 const EpisodesScreen = () => {
-  const {info, episodes, loading, error, fetchEpisodes} = useEpisodes('1', '', false);
+  const [page, setPage] = useState(1);
+  const {info, episodes, loading, error, fetchEpisodes} = useEpisodes();
   const [searchValue, setSearchValue] = useState('');
-  const [refreshing, setRefreshing] = React.useState(false);
-
-  const loadMore = async () => {
-    if (info && info.next) {
-      const page = getSearchParamFromURL(info.next, 'page');
-      await fetchEpisodes(page, searchValue, true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [searchCount, setSearchCount] = useState(1);
+  const loadMore = () => {
+    if (!loading && page < 3 && info?.next) {
+      setPage(p => p + 1);
     }
   };
 
+  useEffect(() => {
+    if (page === 1) {
+      fetchEpisodes(page, searchValue, false);
+    } else {
+      fetchEpisodes(page, searchValue, true);
+    }
+  }, [page, searchCount]);
+
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
-    await fetchEpisodes('1', '', false);
+    setPage(1);
     setRefreshing(false);
   }, []);
 
-  const handleSearch = async (value: string) => {
-    await fetchEpisodes('1', value, false);
+  const handleSearch = async () => {
+    setPage(1);
+    setSearchCount(p => p + 1);
   };
 
   const renderCards = ({item}: {item: IEpisode}) => <EpisodeCard episode={item} />;
@@ -40,7 +48,6 @@ const EpisodesScreen = () => {
           searchValue={searchValue}
           setSearchValue={setSearchValue}
         />
-        {loading || !info ? <ShowMsg full loading /> : null}
         {error ? <ShowMsg full msg={error} /> : null}
         {!error && info ? (
           <FlatList
@@ -49,8 +56,9 @@ const EpisodesScreen = () => {
             renderItem={renderCards}
             showsVerticalScrollIndicator={false}
             onEndReached={loadMore}
-            onEndReachedThreshold={0.3}
-            ListFooterComponent={loading ? <ShowMsg loading /> : null}
+            onEndReachedThreshold={0.1}
+            initialNumToRender={10}
+            ListFooterComponent={loading || refreshing ? <ShowMsg loading /> : null}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           />
         ) : null}

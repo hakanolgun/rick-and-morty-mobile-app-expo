@@ -64,4 +64,4 @@ const Btn = (props: IProps) => {
   );
 };
 
-export default Btn;
+export default React.memo(Btn);

@@ -21,7 +21,7 @@ const EpisodeCard = ({episode}: IEpisodeCard) => {
   );
 };
 
-export default EpisodeCard;
+export default React.memo(EpisodeCard);
 
 const ss = StyleSheet.create({
   cardContainer: {
