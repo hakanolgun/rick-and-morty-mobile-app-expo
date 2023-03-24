@@ -19,7 +19,7 @@ const FavoritesScreen = () => {
 
   const renderCards = ({item}: any) => {
     return (
-      <CharacterCard url={item.url}>
+      <CharacterCard char={item}>
         <DeleteFav charID={getCharID(item.url)} />
       </CharacterCard>
     );
