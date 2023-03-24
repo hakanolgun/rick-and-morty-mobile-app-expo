@@ -6,9 +6,9 @@ const TabLayoutNav = () => {
   return (
     <Tabs screenOptions={{tabBarShowLabel: false}}>
       <Tabs.Screen
-        name="index"
+        name="episodes"
         options={{
-          title: 'Episodes',
+          headerShown: false,
           tabBarIcon: ({focused}) => (
             <Icon name="home" color={focused ? 'green' : 'white'} size={36} />
           ),
@@ -23,7 +23,7 @@ const TabLayoutNav = () => {
           ),
         }}
       />
-      <Tabs.Screen name="episode" options={{href: null}} />
+      <Tabs.Screen name="characters" options={{href: null}} />
     </Tabs>
   );
 };

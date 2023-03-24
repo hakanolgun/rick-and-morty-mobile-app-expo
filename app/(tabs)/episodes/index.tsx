@@ -1,11 +1,11 @@
 import {View, FlatList, SafeAreaView, RefreshControl} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import base from '../../constants/Base';
-import ShowMsg from '../../components/common/ShowMsg';
-import {IEpisode} from '../../interface/episode';
-import EpisodeCard from '../../components/episode/EpisodeCard';
-import Search from '../../components/common/Search';
-import useEpisodes from '../../hooks/useEpisodes';
+import base from '../../../constants/Base';
+import ShowMsg from '../../../components/common/ShowMsg';
+import {IEpisode} from '../../../interface/episode';
+import EpisodeCard from '../../../components/episode/EpisodeCard';
+import Search from '../../../components/common/Search';
+import useEpisodes from '../../../hooks/useEpisodes';
 
 const EpisodesScreen = () => {
   const [page, setPage] = useState(1);

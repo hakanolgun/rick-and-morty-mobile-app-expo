@@ -1,5 +1,5 @@
 import {View, Text, FlatList} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ShowMsg from '../../../components/common/ShowMsg';
 import base from '../../../constants/Base';
 import useEpisode from '../../../hooks/useEpisode';
@@ -16,7 +16,6 @@ const EpisodeScreen = () => {
   const [filteredChars, setFilteredChars] = useState<any[]>([]);
 
   const handleSearch = (newValue: string) => {
-    console.log('newValue', newValue);
     if (newValue.trim() === '' && episode) {
       setFilteredChars(episode.characters);
     } else if (!episode) {
@@ -28,6 +27,13 @@ const EpisodeScreen = () => {
       setFilteredChars(filtered);
     }
   };
+
+  useEffect(() => {
+    console.log('useeffect');
+    if (episode) {
+      setFilteredChars(episode.characters);
+    }
+  }, [episode]);
 
   const renderCharacters = ({item}: {item: ICharacter}) => (
     <CharacterCard char={item}>

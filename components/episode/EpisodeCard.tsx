@@ -9,7 +9,7 @@ interface IEpisodeCard {
 }
 const EpisodeCard = ({episode}: IEpisodeCard) => {
   return (
-    <Link href={{pathname: '/episode', params: {id: episode.id}}} asChild>
+    <Link href={{pathname: '/episodes/episode', params: {id: episode.id}}} asChild>
       <TouchableOpacity style={ss.cardContainer}>
         <Text style={base.label}>{episode.name}</Text>
         <View style={base.flexRowBetween}>
