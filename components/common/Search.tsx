@@ -11,12 +11,12 @@ interface IProps {
 
 const Search = ({handleSearch, searchValue, setSearchValue}: IProps) => {
   const handlePress = () => {
-    handleSearch();
+    handleSearch(searchValue);
   };
   const updateValue = (newValue: string) => {
     setSearchValue(newValue);
     if (newValue.trim() === '') {
-      handleSearch();
+      handleSearch(newValue);
     }
   };
   return (
