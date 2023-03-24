@@ -11,7 +11,6 @@ export const useEpisodes = () => {
     setLoading(true);
     try {
       let url = `https://rickandmortyapi.com/api/episode/?page=${p}&name=${n}`;
-      console.log('url', url);
       const response = await fetch(url);
       const resData = await response.json();
       if (resData.info) {
@@ -25,7 +24,6 @@ export const useEpisodes = () => {
         setError(resData.error);
       }
     } catch (err) {
-      console.log('error', err);
       setError(JSON.stringify(err));
     } finally {
       setLoading(false);

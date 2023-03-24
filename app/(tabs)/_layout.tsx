@@ -1,10 +1,20 @@
 import React from 'react';
-import {Tabs} from 'expo-router';
+import {Pressable, View} from 'react-native';
+import {Link, Tabs, useRouter} from 'expo-router';
 import {FontAwesome as Icon} from '@expo/vector-icons';
 
 const TabLayoutNav = () => {
+  const router = useRouter();
   return (
-    <Tabs screenOptions={{tabBarShowLabel: false}}>
+    <Tabs
+      screenOptions={{
+        headerShown: true,
+        tabBarShowLabel: false,
+        headerStyle: {},
+        headerTitleStyle: {},
+        headerTitleAlign: 'center',
+        headerTintColor: '#fff',
+      }}>
       <Tabs.Screen
         name="episodes"
         options={{
@@ -23,7 +33,19 @@ const TabLayoutNav = () => {
           ),
         }}
       />
-      <Tabs.Screen name="characters" options={{href: null}} />
+      <Tabs.Screen
+        name="characters"
+        options={{
+          href: null,
+          headerShown: true,
+          title: 'Character',
+          headerLeft: () => (
+            <Pressable style={{paddingHorizontal: 10}} onPress={() => router.back()}>
+              <Icon name="arrow-left" color="white" size={24} />
+            </Pressable>
+          ),
+        }}
+      />
     </Tabs>
   );
 };

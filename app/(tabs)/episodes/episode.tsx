@@ -29,7 +29,6 @@ const EpisodeScreen = () => {
   };
 
   useEffect(() => {
-    console.log('useeffect');
     if (episode) {
       setFilteredChars(episode.characters);
     }

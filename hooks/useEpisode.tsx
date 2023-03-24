@@ -26,7 +26,6 @@ export const useEpisode = (id: string) => {
           setError(resData.error);
         }
       } catch (err) {
-        console.log('err', err);
         setError(JSON.stringify(error));
       } finally {
         setLoading(false);
