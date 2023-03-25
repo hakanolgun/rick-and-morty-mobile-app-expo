@@ -29,9 +29,7 @@ const FavoriteBtn = ({charID}: IProps) => {
 
   return (
     <TouchableOpacity style={ss.btn} onPress={handlePress}>
-      <View style={ss.view}>
-        <Icon name="heart" color={faved ? 'red' : 'white'} size={30} />
-      </View>
+      <Icon name="heart" color={faved ? 'red' : 'white'} size={30} />
       <Modal
         animationType="slide"
         transparent={true}
@@ -58,25 +56,12 @@ const FavoriteBtn = ({charID}: IProps) => {
 export default FavoriteBtn;
 const ss = StyleSheet.create({
   btn: {
-    width: 100,
-    height: 100,
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: 16,
+    right: 6,
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'flex-end',
-  },
-  view: {
-    width: 50,
-    height: 50,
-    backgroundColor: colors.bg_light,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 25,
-    marginTop: 3,
-    marginRight: 3,
-    paddingTop: 3,
+    padding: 6,
   },
 });
