@@ -16,7 +16,7 @@ This is a React Native project with Expo.
 - Redux Toolkit
 - Redux Persist (AsyncStorage)
 - React Navigation
-- Axios
+- React Native Paper
 
 ## How to set up?
 
