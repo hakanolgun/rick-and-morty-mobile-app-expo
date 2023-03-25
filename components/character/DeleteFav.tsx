@@ -26,9 +26,8 @@ const DeleteFav = ({charID}: IProps) => {
   };
   return (
     <TouchableOpacity style={ss.btn} onPress={handlePress}>
-      <View style={ss.view}>
-        <Icon name="trash" color="whitesmoke" size={30} />
-      </View>
+      <Icon name="trash" color="whitesmoke" size={30} />
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -55,24 +54,12 @@ const DeleteFav = ({charID}: IProps) => {
 export default DeleteFav;
 const ss = StyleSheet.create({
   btn: {
-    width: 100,
-    height: 100,
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: 16,
+    right: 6,
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'flex-end',
-  },
-  view: {
-    width: 50,
-    height: 50,
-    backgroundColor: colors.text_gray,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 25,
-    marginTop: 3,
-    marginRight: 3,
+    padding: 6,
   },
 });
