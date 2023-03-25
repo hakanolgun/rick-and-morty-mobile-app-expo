@@ -1,5 +1,4 @@
 import {useCallback, useEffect} from 'react';
-import {getCharacter} from '../api/api';
 import useAxios from './useAxios';
 
 export const useCharacter = (id: string) => {
@@ -8,7 +7,10 @@ export const useCharacter = (id: string) => {
   const fetchAgain = useCallback(
     async (ID: string) => {
       if (ID !== '') {
-        await fetchData(getCharacter(ID));
+        await fetchData({
+          method: 'GET',
+          url: `character/${ID}`,
+        });
       }
     },
     [fetchData],
