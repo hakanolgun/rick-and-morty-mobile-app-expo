@@ -7,6 +7,7 @@ import {useColorScheme} from 'react-native';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistStore} from 'redux-persist';
+import {Provider as PaperProvider} from 'react-native-paper';
 import {store} from '../store/store';
 
 let persistor = persistStore(store);
@@ -44,9 +45,11 @@ function RootLayoutNav() {
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{headerShown: false}} />
-            </Stack>
+            <PaperProvider>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{headerShown: false}} />
+              </Stack>
+            </PaperProvider>
           </ThemeProvider>
         </PersistGate>
       </Provider>
