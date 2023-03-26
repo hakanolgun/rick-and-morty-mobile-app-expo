@@ -1,0 +1,28 @@
+version: '2.4'
+
+services:
+  rick_and_morty_expo:
+    build:
+      context: .
+      args:
+        - NODE_ENV=development
+    environment:
+      - NODE_ENV=development
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0 
+      - REACT_NATIVE_PACKAGER_HOSTNAME=192.168.1.109
+    tty: true
+    ports:
+      - '19006:19006'
+      - '19000:19000'
+      - '19001:19001'
+      - '19002:19002'
+    volumes:
+      - ./:/opt/rick_and_morty_expo/app:delegated
+      - ./package.json:/opt/rick_and_morty_expo/package.json
+      - ./package-lock.json:/opt/rick_and_morty_expo/package-lock.json
+      - notused:/opt/rick_and_morty_expo/app/node_modules
+    healthcheck:
+      disable: true
+
+volumes:
+  notused:
