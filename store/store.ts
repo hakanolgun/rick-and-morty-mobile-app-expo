@@ -1,15 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
-import {
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from 'redux-persist';
+import {persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER} from 'redux-persist';
 import favoriteSlice from './slices/favoriteSlice';
+import notifySlice from './slices/notifySlice';
 
 const persistConfig = {
   key: 'root',
@@ -20,6 +13,7 @@ const persistConfig = {
 
 const reducers = combineReducers({
   fav: favoriteSlice,
+  notify: notifySlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
