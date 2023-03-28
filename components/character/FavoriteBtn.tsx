@@ -1,15 +1,18 @@
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {Fontisto as Icon} from '@expo/vector-icons';
-import colors from '../../constants/Colors';
 import {addFav, deleteFav, useFavs} from '../../store/slices/favoriteSlice';
 import {useAppDispatch} from '../../store/hookTypes';
 import base from '../../constants/Base';
 import Btn from '../common/Btn';
+import {sendPushNotification} from '../../utils/notifications';
+import {usePushToken} from '../../store/slices/notifySlice';
 
 interface IProps {
   charID: string;
 }
+
+const msg = `You've exceeded the number of favorite characters added. You have to remove another character from favorites`;
 
 const FavoriteBtn = ({charID}: IProps) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -17,11 +20,14 @@ const FavoriteBtn = ({charID}: IProps) => {
   const favs = useFavs();
   const faved = favs.some(item => item === charID);
 
+  const pushToken = usePushToken();
+
   const handlePress = async () => {
     if (faved) {
       dispatch(deleteFav(charID));
     } else if (favs.length >= 10) {
       setModalVisible(true);
+      await sendPushNotification(pushToken, 'Maximum 10 Favorites', msg);
     } else {
       dispatch(addFav(charID));
     }
@@ -39,10 +45,7 @@ const FavoriteBtn = ({charID}: IProps) => {
         }}>
         <View style={base.centeredView}>
           <View style={base.modalView}>
-            <Text style={base.text}>
-              You've exceeded the number of favorite characters added. You have to remove another
-              character from favorites.
-            </Text>
+            <Text style={base.text}>{msg}</Text>
             <View style={base.doubleBtnContainer}>
               <Btn w={90} title="Back" press={() => setModalVisible(false)} />
             </View>
